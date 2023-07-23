@@ -27,6 +27,9 @@ let requestCurrentWeather;
 let answerCurrentWeather;
 let codeDescription;
 let picturesCodeMud;
+let currentMonth;
+let currentDay;
+
 
 const sunny = "https://ssl.gstatic.com/onebox/weather/64/sunny.png";
 const cloudyAndSunny = "https://ssl.gstatic.com/onebox/weather/64/partly_cloudy.png";
@@ -50,7 +53,7 @@ fetch(myAddress).then((response)=>{
         return Promise.reject(new Error(response.statusText));
     }
 }).then((res)=>{
-    console.log(res);
+
 
     latitude = res.latitude;
     longitude = res.longitude; 
@@ -85,7 +88,6 @@ function getCurrentWeather(){
         }
     }).then((res)=>{
         answerCurrentWeather = res.current_weather;
-        console.log(answerCurrentWeather);
 
       
        getAndShowCurrentParametresOfWeatherTemperature(); ///temperature
@@ -127,16 +129,44 @@ function getAndShowCurrentParametresOfWeatherTimeAndDay(){
 
 function showTimeAndData(timeAndData){
 
-     let data = timeAndData.split('T');
-    let currentData = data[0];
-    let currentTime = data[1];
+    let data = new Date(timeAndData);
+    currentDay = data.getDay();
+    currentMonth = data.getMonth();
 
     let listLi = '';
-    let li = `<li class='li-data'> ${currentData}</li>`;
-    let li1 = `<li class='li-time'> ${currentTime}</li>`;
+    let li = `<li class='li-data'> ${data.getDate()} ${getNameOfMonth(currentMonth)} ${getDayOfWeek(currentDay)}</li>`;
+    let li1 = `<li class='li-time'> ${data.getHours()}:${String(data.getMinutes()).padStart(2,'0')}</li>`;
     listLi = li+li1;
     listParametrsDataTime.innerHTML = listLi;
 }
+
+function getNameOfMonth(){
+switch(currentMonth) {
+    case 0: return 'January';
+    case 1: return 'February';
+    case 2: return 'March';
+    case 3: return 'April';
+    case 4: return 'May';
+    case 5: return 'June';
+    case 6: return 'July';
+    case 7: return 'August';
+    case 8:  return 'September';
+    case 9: return 'Oktober';
+    case 10: return 'November';
+    default:  return 'December';
+}
+}
+
+function getDayOfWeek(){
+    switch(currentDay) {
+        case 0: return 'Sunday';
+        case 1: return 'Monday';
+        case 2: return 'Tuesday';
+        case 3: return 'Wednesday';
+        case 4: return 'Thursday';
+        case 5: return 'Friday';
+        default:  return 'Saturday';
+}}
 
 ///3.3.BLOK  weathercode
 
@@ -180,7 +210,7 @@ function actionDependsOfWeathercode(weathercode){
 
 function ShowCurrentParametresOfWeatherWindspeedWinddirectionWeathercodeStatment(){
     let listLi = '';
-    let li = `<li class='li-windspeed'> windspeed: ${answerCurrentWeather.windspeed} m/s</li>`;
+    let li = `<li class='li-windspeed'> windspeed: ${answerCurrentWeather.windspeed} km/h </li>`;
     let li1 = `<li class='li-winddirection'> winddirection: ${winddirectionByParametr(answerCurrentWeather.winddirection)}</li>`;
     let li2 = `<li class='li-codeDescription'> weather now: ${codeDescription}</li>`;
     listLi = li+li1+li2;
@@ -213,9 +243,6 @@ function showCityAndCountry(country,city){
 buttonShowWeather.addEventListener('click', (()=>
 {
 mudTitleFirstRow.textContent = "";
-
-
-console.log(picturesCodeMud);
 
     switch(picturesCodeMud) {
         case 10,20,30: 
