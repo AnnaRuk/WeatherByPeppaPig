@@ -46,7 +46,17 @@ font-family: 'Poller One', cursive;
     font-size: 15px;
 }
 
+#mudTitleFirstRow{
+    text-align: right;
+
+}
+
+#buttonShowMud{
+    text-align: left;
+
+}
+
 #picturesOfMudWeather{
-    width: 100px;
-    height: 100px;
+    width: 150px;
+    height: 150px;
 }
