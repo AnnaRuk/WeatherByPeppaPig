@@ -29,6 +29,6 @@ Project status: under development.
 
   6.4. Displayed the obtained data using HTML/CSS. I used fonts, images, and additional capabilities. The temperature value was shown in Fahrenheit, and the visual representation of Peppa Pig was displayed based on the current weather conditions.
 
-  6.5. Deployed the project on GitPages and wrote a README.
+  6.5. Deployed the project on GitPages and wrote a README file.
 
 

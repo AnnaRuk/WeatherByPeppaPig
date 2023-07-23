@@ -1,5 +1,4 @@
 
-/* styles */
 #countryAndCity{
 
     font-family: 'Caprasimo', cursive;
@@ -23,12 +22,6 @@ font-family: 'Poller One', cursive;
    border-radius: 20px;
    background-color: #f8aaaa;
 }
-
-
-#buttonShowWeather{
-
-}
-
 
 .row{
     margin-top: 25px;

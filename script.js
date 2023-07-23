@@ -91,7 +91,7 @@ function getCurrentWeather(){
        getAndShowCurrentParametresOfWeatherTemperature(); ///temperature
        getAndShowCurrentParametresOfWeatherTimeAndDay(); /// time data
        getAndShowCurrentParametresOfWeatherWeathercode(); ///pictures acording weathercode
-       ShowCurrentParametresOfWeatherWindspeedWinddirectionWeathercodeStatment(); //show windspeed + winddirection + weathercode(description)
+       ShowCurrentParametresOfWeatherWindspeedWinddirectionWeathercodeStatment();
 
 })
 
@@ -175,8 +175,6 @@ function actionDependsOfWeathercode(weathercode){
     }
         
 }
-
-
 
 ///3.4.BLOK show windspeed + winddirection + weathercode(description)
 
