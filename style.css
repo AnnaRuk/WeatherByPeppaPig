@@ -1,0 +1,59 @@
+
+/* styles */
+#countryAndCity{
+
+    font-family: 'Caprasimo', cursive;
+font-family: 'Poller One', cursive;
+}
+
+.mud{
+    font-size: 10px;
+    margin-top: 50px;
+    
+}
+
+#numberOfTemperature {
+
+    font-size: 70px;
+}
+
+#mainContainer{
+    
+   border: 2px solid gray;
+   border-radius: 20px;
+   background-color: #f8aaaa;
+}
+
+
+#buttonShowWeather{
+
+}
+
+
+.row{
+    margin-top: 25px;
+    margin-bottom: 25px;
+}
+
+.btn{
+    margin: 5px;
+}
+
+#listParametrsDataTime{
+    list-style-type: none;
+    text-align: left;
+    font-family: 'Lumanosimo', cursive;
+    font-size: 30px;
+}
+
+#ListParametrsWeather{
+    list-style-type: none;
+    text-align: left;
+    font-family: 'Lumanosimo', cursive;
+    font-size: 15px;
+}
+
+#picturesOfMudWeather{
+    width: 100px;
+    height: 100px;
+}
