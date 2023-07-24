@@ -45,79 +45,119 @@ const picturesGoodMud =
 const picturesBadMud =
   "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/9e823352-276b-49b7-8c01-1a8add1af5e2/d9jabvs-301a0bff-6c81-4c17-b27e-2cd3d760e2ba.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzllODIzMzUyLTI3NmItNDliNy04YzAxLTFhOGFkZDFhZjVlMlwvZDlqYWJ2cy0zMDFhMGJmZi02YzgxLTRjMTctYjI3ZS0yY2QzZDc2MGUyYmEucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.ozv0ikRneJV8pP7XKV4vEPvno7IrN00I_H8buCDB33A";
 
-getDataAboutPlace();
+//0.block with Async/aweit
 
-//1. BLOK get plase
+weatherHandler(getDataAboutPlaceAA, getCurrentWeatherAA, showfunctionAA);
 
-function getDataAboutPlace() {
-  fetch(myAddress)
-    .then((response) => {
-      if (response.ok) {
-        return response.json();
-      } else {
-        return Promise.reject(new Error(response.statusText));
-      }
-    })
-    .then((res) => {
-      latitude = res.latitude;
-      longitude = res.longitude;
-      city = res.city;
-      country = res.country;
-
-      showCityAndCountry(country, city);
-
-      requestCurrentWeather = insertsCoordinatesCurrentWeatherRequest();
-      answerCurrentWeather = getCurrentWeather();
-    });
+async function getDataAboutPlaceAA() {
+  try {
+    const response = await fetch(myAddress);
+    const res = await response.json();
+    return {
+      latitude: res.latitude,
+      longitude: res.longitude,
+      city: res.city,
+      country: res.country,
+    };
+  } catch {
+    throw new Error("error while getting location");
+  }
 }
 
-/// 2. BLOK getting current weather from https://open-meteo.com/
+async function getCurrentWeatherAA(location) {
+  try {
+    const { latitude, longitude, city, country } = location;
+    requestCurrentWeather = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true`;
+    const response = await fetch(requestCurrentWeather);
+    const res = await response.json();
 
-function insertsCoordinatesCurrentWeatherRequest() {
-  return `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true`;
+    return {
+      city: city,
+      country: country,
+      longitude: longitude,
+      latitude: latitude,
+      temperature: res.current_weather.temperature,
+      time: res.current_weather.time,
+      weathercode: res.current_weather.weathercode,
+      winddirection: res.current_weather.winddirection,
+      windspeed: res.current_weather.windspeed,
+    };
+  } catch {
+    throw new Error("error while getting weather");
+  }
 }
 
-function getCurrentWeather() {
-  fetch(requestCurrentWeather)
-    .then((response) => {
-      if (response.ok) {
-        return response.json();
-      } else {
-        return Promise.reject(new Error(response.statusText));
-      }
-    })
-    .then((res) => {
-      answerCurrentWeather = res.current_weather;
-
-      getAndShowCurrentParametresOfWeatherTemperature(); ///temperature
-      getAndShowCurrentParametresOfWeatherTimeAndDay(); /// time data
-      getAndShowCurrentParametresOfWeatherWeathercode(); ///pictures acording weathercode
-      ShowCurrentParametresOfWeatherWindspeedWinddirectionWeathercodeStatment();
-    });
+async function weatherHandler(
+  getDataAboutPlaceAA,
+  getCurrentWeatherAA,
+  showfunctionAA
+) {
+  let place = await getDataAboutPlaceAA();
+  console.log(place);
+  let weather = await getCurrentWeatherAA(place);
+  console.log(weather);
+  showfunctionAA(weather);
 }
 
-/// 3. BLOK working with parametres
-///3.1.BLOK temperature
+///TODO
+function showfunctionAA(weather) {
+  console.log(weather);
+  console.log("DONE");
 
-function getAndShowCurrentParametresOfWeatherTemperature() {
-  numberOfTemperature.textContent = answerCurrentWeather.temperature.toFixed(0); /// temperature 25, but value 24.8
+  getAndShowCurrentParametresOfWeatherTemperature(weather); ///temperature
+  getAndShowCurrentParametresOfWeatherTimeAndDay(weather); /// time data
+  getAndShowCurrentParametresOfWeatherWeathercode(weather); ///pictures acording weathercode
+  ShowCurrentParametresOfWeatherWindspeedWinddirectionWeathercodeStatment(
+    weather
+  );
+  showCityAndCountry(weather);
+
+  buttonsEvent(weather);
 }
 
-buttonCilsiyTemperature.addEventListener("click", () => {
-  numberOfTemperature.textContent = answerCurrentWeather.temperature.toFixed(0);
-});
+//TODO/// ne rabotaet
+function buttonsEvent(weather) {
+  buttonCilsiyTemperature.addEventListener("click", () => {
+    numberOfTemperature.textContent = weather.temperature.toFixed(0);
+  });
 
-buttonFaringateTemperature.addEventListener("click", () => {
-  numberOfTemperature.textContent = (
-    (answerCurrentWeather.temperature * 9) / 5 +
-    32
-  ).toFixed(0);
-});
+  buttonFaringateTemperature.addEventListener("click", () => {
+    numberOfTemperature.textContent = (
+      (weather.temperature * 9) / 5 +
+      32
+    ).toFixed(0);
+  });
+
+  //5. MUD
+
+  buttonShowWeather.addEventListener("click", () => {
+    //mudTitleFirstRow.textContent = "";
+
+    switch (picturesCodeMud) {
+      case (10, 20, 30):
+        mudContainer.innerHTML = `<img id="picturesOfMudWeather" src=${picturesGoodMud} alt="">`;
+        break;
+      default:
+        mudContainer.innerHTML = `<img id="picturesOfMudWeather" src=${picturesBadMud} alt="">`;
+    }
+    setTimeout(() => (mudContainer.innerHTML = ""), 5000);
+  });
+}
+
+function getAndShowCurrentParametresOfWeatherTemperature(weather) {
+  numberOfTemperature.textContent = weather.temperature.toFixed(0); /// temperature 25, but value 24.8
+}
+
+//4. BLOK title city country  TODO
+
+function showCityAndCountry(weather) {
+  countryAndCity.textContent = weather.country + ", " + weather.city;
+}
 
 ///3.2.BLOK show time and day
 // time:"2023-07-23T11:00"
-function getAndShowCurrentParametresOfWeatherTimeAndDay() {
-  let timeAndData = answerCurrentWeather.time;
+function getAndShowCurrentParametresOfWeatherTimeAndDay(weather) {
+  let timeAndData = weather.time;
   showTimeAndData(timeAndData);
 }
 
@@ -137,65 +177,52 @@ function showTimeAndData(timeAndData) {
   listParametrsDataTime.innerHTML = listLi;
 }
 
-function getNameOfMonth() {
-  switch (currentMonth) {
-    case 0:
-      return "January";
-    case 1:
-      return "February";
-    case 2:
-      return "March";
-    case 3:
-      return "April";
-    case 4:
-      return "May";
-    case 5:
-      return "June";
-    case 6:
-      return "July";
-    case 7:
-      return "August";
-    case 8:
-      return "September";
-    case 9:
-      return "Oktober";
-    case 10:
-      return "November";
-    default:
-      return "December";
-  }
+function getNameOfMonth(currentMonth) {
+  const currentMonthFromObject = {
+    0: "January",
+    1: "February",
+    2: "March",
+    3: "April",
+    4: "May",
+    5: "June",
+    6: "July",
+    7: "August",
+    8: "September",
+    9: "Oktober",
+    10: "November",
+    11: "December",
+  };
+  return currentMonthFromObject[currentMonth];
 }
 
-function getDayOfWeek() {
-  switch (currentDay) {
-    case 0:
-      return "Sunday";
-    case 1:
-      return "Monday";
-    case 2:
-      return "Tuesday";
-    case 3:
-      return "Wednesday";
-    case 4:
-      return "Thursday";
-    case 5:
-      return "Friday";
-    default:
-      return "Saturday";
-  }
+function getDayOfWeek(currentDay) {
+  const dayOfWeekFromObject = {
+    0: "Sunday",
+    1: "Monday",
+    2: "Tuesday",
+    3: "Wednesday",
+    4: "Thursday",
+    5: "Friday",
+    6: "Saturday",
+  };
+
+  return dayOfWeekFromObject[currentDay];
 }
 
 ///3.3.BLOK  weathercode
 
-function getAndShowCurrentParametresOfWeatherWeathercode() {
-  let weathercode = answerCurrentWeather.weathercode;
+function getAndShowCurrentParametresOfWeatherWeathercode(weather) {
+  let weathercode = weather.weathercode;
+  console.log(weathercode);
 
   actionDependsOfWeathercode(weathercode);
 }
 
+//TODO
 function actionDependsOfWeathercode(weathercode) {
   switch (weathercode) {
-    case (0, 1):
+    case 0:
+    case 1:
       picturesOfCodeWeather.src = sunny;
       codeDescription = "Clear sky/Mainly clear";
       picturesCodeMud = 10;
@@ -215,6 +242,7 @@ function actionDependsOfWeathercode(weathercode) {
       codeDescription = "rain";
       picturesCodeMud = 40;
       break;
+
     case (71, 73, 75, 77, 85, 86):
       picturesOfCodeWeather.src = snow;
       codeDescription = "snow";
@@ -222,6 +250,7 @@ function actionDependsOfWeathercode(weathercode) {
       break;
     ///TODO add pictures
     default:
+      picturesOfCodeWeather.src = rain;
       codeDescription = "bad weather";
       picturesCodeMud = 60;
   }
@@ -229,11 +258,13 @@ function actionDependsOfWeathercode(weathercode) {
 
 ///3.4.BLOK show windspeed + winddirection + weathercode(description)
 
-function ShowCurrentParametresOfWeatherWindspeedWinddirectionWeathercodeStatment() {
+function ShowCurrentParametresOfWeatherWindspeedWinddirectionWeathercodeStatment(
+  weather
+) {
   let listLi = "";
-  let li = `<li class='li-windspeed'> windspeed: ${answerCurrentWeather.windspeed} km/h </li>`;
+  let li = `<li class='li-windspeed'> windspeed: ${weather.windspeed} km/h </li>`;
   let li1 = `<li class='li-winddirection'> winddirection: ${winddirectionByParametr(
-    answerCurrentWeather.winddirection
+    weather.winddirection
   )}</li>`;
   let li2 = `<li class='li-codeDescription'> weather now: ${codeDescription}</li>`;
   listLi = li + li1 + li2;
@@ -264,24 +295,3 @@ function winddirectionByParametr(winddirection) {
     return "west-nord";
   }
 }
-
-//4. BLOK title city country
-
-function showCityAndCountry(country, city) {
-  countryAndCity.textContent = country + ", " + city;
-}
-
-//5. MUD
-
-buttonShowWeather.addEventListener("click", () => {
-  //mudTitleFirstRow.textContent = "";
-
-  switch (picturesCodeMud) {
-    case (10, 20, 30):
-      mudContainer.innerHTML = `<img id="picturesOfMudWeather" src=${picturesGoodMud} alt="">`;
-      break;
-    default:
-      mudContainer.innerHTML = `<img id="picturesOfMudWeather" src=${picturesBadMud} alt="">`;
-  }
-  setTimeout(() => (mudContainer.innerHTML = ""), 5000);
-});
